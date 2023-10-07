@@ -1,7 +1,15 @@
-﻿#if Linux
-#if OSX
-namespace Myriad.Myriad.OS
+﻿namespace Myriad.OS;
+
+#if Linux
+internal class Unix : IOperatingSystemServices
 {
+  public void LoadDependencies()
+  {
+    // Nothing to do atm.
+  }
+}
+#endif
+#if OSX
   internal class Unix : IOperatingSystemServices
   {
     public void LoadDependencies()
@@ -9,6 +17,4 @@ namespace Myriad.Myriad.OS
       // Nothing to do atm.
     }
   }
-}
-#endif
 #endif
