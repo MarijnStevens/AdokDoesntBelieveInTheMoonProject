@@ -1,94 +1,106 @@
 ﻿using System.Diagnostics;
 using SDL2;
 
-SDL.SDL_RendererFlags renderFlags = SDL.SDL_RendererFlags.SDL_RENDERER_ACCELERATED
+Log.Init();
+
+var windowFlags =
+SDL.SDL_WindowFlags.SDL_WINDOW_FULLSCREEN_DESKTOP
+//SDL.SDL_WindowFlags.SDL_WINDOW_SHOWN
+| SDL.SDL_WindowFlags.SDL_WINDOW_BORDERLESS
+;
+
+var renderFlags =
+//SDL.SDL_RendererFlags.SDL_RENDERER_SOFTWARE;
+SDL.SDL_RendererFlags.SDL_RENDERER_ACCELERATED
 //| SDL.SDL_RendererFlags.SDL_RENDERER_PRESENTVSYNC;
 ;
 
 int displayIndex = 0;
+var screen = new Rect(0, 0, 1920, 1080);
+float dpi = 0f;
 
-if (SDL.SDL_Init(SDL.SDL_INIT_VIDEO) < 0)
-{
-    Console.WriteLine($"There was an issue initilizing SDL. {SDL.SDL_GetError()}");
-}
+string windowText = "Myriad000";
+float fontSizeInPoints = 24;
 
-IntPtr window = SDL.SDL_CreateWindow("Adok doesn't believe in the Moon Project.", 0, 0, 640, 480,
-SDL.SDL_WindowFlags.SDL_WINDOW_FULLSCREEN_DESKTOP);
+var benchmark = new Benchmarky();
+Log.Debug("SDL_Init");
+Log.Error(SDL.SDL_Init(SDL.SDL_INIT_VIDEO) < 0, "There was an issue initilizing SDL.");
+Log.Debug();
 
-if (window == IntPtr.Zero)
-{
-    Console.WriteLine($"There was an issue creating the window. {SDL.SDL_GetError()}");
-}
+Log.Debug("SDL_CreateWindow");
+IntPtr window = SDL.SDL_CreateWindow(windowText, 0, 0, 1920, 1080, windowFlags);
+Log.Debug();
 
-int screenWidth, screenHeight;
+Log.Error(window == IntPtr.Zero, "There was an issue creating the window");
+
+Log.Debug($"SDL_GetDesktopDisplayMode({displayIndex})");
 if (SDL.SDL_GetDesktopDisplayMode(displayIndex, out SDL.SDL_DisplayMode dm) == 0)
 {
-    screenWidth = dm.w;
-    screenHeight = dm.h;
+    screen.w = dm.w;
+    screen.h = dm.h;
 }
 else
 {
-    Console.WriteLine($"Unable to get desktop display mode: {SDL.SDL_GetError()}");
+    Log.Debug("Unable to get desktop display mode: {}");
     SDL.SDL_Quit();
     return;
 }
+Log.Debug();
 
-float dpi = 0f;
-if (SDL.SDL_GetDisplayDPI(displayIndex, out dpi, out _, out _) != 0)
-{
-    Console.WriteLine($"SDL GetDisplayDPI({displayIndex}) failed.");
-}
+Log.Debug($"SDL_GetDesktopDisplayDPI({displayIndex})");
+Log.Error(SDL.SDL_GetDisplayDPI(displayIndex, out dpi, out _, out _) != 0, "SDL GetDisplayDPI(" + displayIndex + ") failed. {}");
+float fontSizeInPixels = fontSizeInPoints * (dpi / 72.0f);
 
-float fontSizeInPoints = 24;
-float fontSizeInPixels = fontSizeInPoints * (dpi / 72.0f); // Assuming 1 inch = 72 points
-
+Log.Debug("SDL_CreateRenderer");
 var renderer = SDL.SDL_CreateRenderer(window, -1, renderFlags);
+Log.Debug();
+Log.Error(renderer == IntPtr.Zero, "There was an issue creating the renderer. {}", () => SDL.SDL_Quit());
 
-if (renderer == IntPtr.Zero)
-{
-    Console.WriteLine($"There was an issue creating the renderer. {SDL.SDL_GetError()}");
-}
+Log.Debug("IMG_InitFlags");
+Log.Error(SDL_image.IMG_Init(SDL_image.IMG_InitFlags.IMG_INIT_PNG) == 0, "There was an issue initilizing SDL2_Image: {}", () => SDL.SDL_Quit());
+Log.Debug();
 
-if (SDL_image.IMG_Init(SDL_image.IMG_InitFlags.IMG_INIT_PNG) == 0)
-{
-    Console.WriteLine($"There was an issue initilizing SDL2_Image {SDL_image.IMG_GetError()}");
-}
-
-if (SDL_ttf.TTF_Init() == -1)
-{
-    Console.WriteLine($"TTF_Init Error: {SDL_ttf.TTF_GetError()}");
-    // Handle the error accordingly
-}
+Log.Debug("TTF_Init");
+Log.Error(SDL_ttf.TTF_Init() == -1, "TTF_Init Error: {}", () => SDL.SDL_Quit());
+Log.Debug();
 
 var quit = false;
 
-IntPtr imageSurface = SDL_image.IMG_Load("disclaimer.png");
+Log.Debug("IMG_Load");
+IntPtr imageSurface = SDL_image.IMG_Load("assets/disclaimer.png");
+Log.Debug();
 
 if (imageSurface == IntPtr.Zero)
 {
-    Console.WriteLine($"IMG_Load Error: {SDL.SDL_GetError()}");
+    Log.Error($"IMG_Load Error: {SDL.SDL_GetError()}");
+
     SDL.SDL_DestroyRenderer(renderer);
     SDL.SDL_DestroyWindow(window);
     SDL.SDL_Quit();
     return;
 }
 
+Log.Debug("SDL_QueryTexture");
 SDL.SDL_QueryTexture(imageSurface, out _, out _, out int imageWidth, out int imageHeight);
 
+Log.Debug("SDL_CreateTextureFromSurface");
 IntPtr texture = SDL.SDL_CreateTextureFromSurface(renderer, imageSurface);
 
 SDL.SDL_FreeSurface(imageSurface);
 
 SDL.SDL_Rect destRect = new SDL.SDL_Rect
 {
-    x = screenWidth / 2 - 830 / 2,
-    y = screenHeight / 2 - 467 / 2,
+    x = screen.w / 2 - 830 / 2,
+    y = screen.h / 2 - 467 / 2,
     w = 830,
     h = 467
 };
 
 
-IntPtr font = SDL_ttf.TTF_OpenFont("fonts/South_Park_Regular.ttf", (int)fontSizeInPixels);
+Log.Debug("SDL_CreateTextureFromSurface(\"South_Park_Regular.ttf\")");
+IntPtr font = SDL_ttf.TTF_OpenFont("assets/fonts/South_Park_Regular.ttf", (int)fontSizeInPixels);
+Log.Debug();
+
 var textColor = Color.FromArgb(255, 203, 219, 252);
 
 var text = "FPS: 0";
@@ -99,106 +111,41 @@ int textWidth, textHeight;
 
 SDL.SDL_Event e;
 
-int frames = 0;
-long fps = 0;
-
-double averageFPS = 0;
-int previousFrameIndex = 0;
-long[] previousFrames = new long[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-
-var stopwatch = new Stopwatch();
-stopwatch.Start();
-
 // Main loop for the program
+Log.Debug("MainLoop");
 while (!quit)
 {
     while (SDL.SDL_PollEvent(out e) != 0)
     {
-        if (e.type == SDL.SDL_EventType.SDL_QUIT)
-        {
-            quit = true;
-        }
-        else if (e.type == SDL.SDL_EventType.SDL_KEYDOWN && (e.key.keysym.sym == SDL.SDL_Keycode.SDLK_ESCAPE))
+        if (e.type == SDL.SDL_EventType.SDL_QUIT
+        || e.type == SDL.SDL_EventType.SDL_KEYDOWN && (e.key.keysym.sym == SDL.SDL_Keycode.SDLK_ESCAPE)
+        )
         {
             quit = true;
         }
     }
 
     // Sets the color that the screen will be cleared with.
-    if (SDL.SDL_SetRenderDrawColor(renderer, 17, 16, 26, 255) < 0)
-    {
-        Console.WriteLine($"There was an issue with setting the render draw color. {SDL.SDL_GetError()}");
-    }
-
-    // Clears the current render surface.
-    if (SDL.SDL_RenderClear(renderer) < 0)
-    {
-        Console.WriteLine($"There was an issue with clearing the render surface. {SDL.SDL_GetError()}");
-    }
-
-
+    SDL.SDL_SetRenderDrawColor(renderer, 17, 16, 26, 255);
     SDL.SDL_RenderClear(renderer);
-
     SDL.SDL_RenderCopy(renderer, texture, IntPtr.Zero, ref destRect);
 
     // Print FPS
-    text = $"FPS: {fps} (Avg {averageFPS})";
-    //textSurface = SDL_ttf.TTF_RenderText_Solid(font, text, textColor);
+    text = $"FPS: {benchmark.FPS} (Avg {benchmark.AverageFPS})";
     textSurface = SDL_ttf.TTF_RenderText_Blended(font, text, textColor);
-
     textTexture = SDL.SDL_CreateTextureFromSurface(renderer, textSurface);
-    if (SDL_ttf.TTF_SizeText(font, text, out textWidth, out textHeight) != 0)
-    {
-        Console.WriteLine($"TTF_SizeText Error: {SDL_ttf.TTF_GetError()}");
-    }
 
-    SDL.SDL_Rect fontDest = new SDL.SDL_Rect
-    {
-        x = 8,
-        y = 8,
-        w = textWidth,  // Width of the text
-        h = textHeight  // Height of the text
-    };
+    // regenerate texture
+    SDL_ttf.TTF_SizeText(font, text, out textWidth, out textHeight);
 
-    SDL.SDL_RenderCopy(renderer, textTexture, IntPtr.Zero, ref fontDest);
+    var fontDest = new Rect(8, 8, textWidth, textHeight);
+    var fontRect = fontDest.UpdateSDL_Rect();
+
+    SDL.SDL_RenderCopy(renderer, textTexture, IntPtr.Zero, ref fontRect);
     SDL.SDL_RenderPresent(renderer);
 
-    frames++;
-    var elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
-
-    if (elapsedMilliseconds >= 1000)
-    {
-        bool initAverage = false;
-        if (fps == 0)
-        {
-            initAverage = true;
-        }
-
-        fps = frames * 1000 / elapsedMilliseconds;
-        previousFrames[previousFrameIndex] = fps;
-
-        if (initAverage)
-        {
-            for (int i = 0; i < previousFrames.Length; ++i)
-            {
-                previousFrames[i] = fps;
-            }
-        }
-
-        averageFPS = previousFrames.Average();
-
-        if (previousFrameIndex++ > previousFrames.Length)
-        {
-            previousFrameIndex = 0;
-        }
-
-
-
-        frames = 0;
-        stopwatch.Restart();
-    }
+    benchmark.RecordFps();
 }
-
 
 // Clean up the resources that were created.
 SDL.SDL_DestroyRenderer(renderer);
@@ -212,3 +159,4 @@ SDL_ttf.TTF_CloseFont(font);
 SDL_ttf.TTF_Quit();
 
 SDL.SDL_Quit();
+Log.Exit();

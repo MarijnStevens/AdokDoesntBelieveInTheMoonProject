@@ -15,6 +15,7 @@
     <PublishSingleFile>false</PublishSingleFile>
     <SelfContained>true</SelfContained>
 
+    <!-- <DefineConstants Condition="'1'=='1'">$(DefineConstants);USE_SDL</DefineConstants> -->
   </PropertyGroup>
 
 </Project>
