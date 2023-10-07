@@ -1,5 +1,5 @@
-﻿using Myriad.Myriad.OS;
-using SDL2;
+﻿using SDL2;
+using Myriad.OS;
 
 Log.Init();
 

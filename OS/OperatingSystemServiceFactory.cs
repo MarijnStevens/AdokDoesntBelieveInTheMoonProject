@@ -1,6 +1,4 @@
-﻿using Myriad.OS;
-
-namespace Myriad.Myriad.OS;
+﻿namespace Myriad.OS;
 
 internal static class OperatingSystemServiceFactory
 {
@@ -9,11 +7,11 @@ internal static class OperatingSystemServiceFactory
 #if Windows
     return new Windows();
 #endif
-
 #if Linux
-#if OSX
-  return Unix();
+    return new Unix();
 #endif
+#if OSX
+    return new Unix();
 #endif
     throw new PlatformNotSupportedException();
   }
