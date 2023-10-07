@@ -1,7 +1,10 @@
-﻿using System.Diagnostics;
+﻿using Myriad.Myriad.OS;
 using SDL2;
 
 Log.Init();
+
+var os = OperatingSystemServiceFactory.Create();
+os.LoadDependencies();
 
 var windowFlags =
 SDL.SDL_WindowFlags.SDL_WINDOW_FULLSCREEN_DESKTOP
