@@ -115,8 +115,8 @@ namespace SDL2
 				return (byte*) 0;
 			}
 
-			int bufferSize = Utf8Size(str);
-			byte* buffer = (byte*) Marshal.AllocHGlobal(bufferSize);
+			var bufferSize = Utf8Size(str);
+			var buffer = (byte*) Marshal.AllocHGlobal(bufferSize);
 			fixed (char* strPtr = str)
 			{
 				Encoding.UTF8.GetBytes(strPtr, str.Length + 1, buffer, bufferSize);
@@ -133,7 +133,7 @@ namespace SDL2
 			}
 
 			/* We get to do strlen ourselves! */
-			byte* ptr = (byte*) s;
+			var ptr = (byte*) s;
 			while (*ptr != 0)
 			{
 				ptr++;
@@ -160,14 +160,14 @@ namespace SDL2
 			);
 #else
 			/* Old C# requires an extra memcpy, bleh! */
-			int len = (int) (ptr - (byte*) s);
+			var len = (int) (ptr - (byte*) s);
 			if (len == 0)
 			{
 				return string.Empty;
 			}
-			char* chars = stackalloc char[len];
-			int strLen = System.Text.Encoding.UTF8.GetChars((byte*) s, len, chars, len);
-			string result = new string(chars, 0, strLen);
+			var chars = stackalloc char[len];
+			var strLen = System.Text.Encoding.UTF8.GetChars((byte*) s, len, chars, len);
+			var result = new string(chars, 0, strLen);
 #endif
 
 			/* Some SDL functions will malloc, we have to free! */
@@ -283,9 +283,9 @@ namespace SDL2
 			string file,
 			string mode
 		) {
-			byte* utf8File = Utf8EncodeHeap(file);
-			byte* utf8Mode = Utf8EncodeHeap(mode);
-			IntPtr rwOps = INTERNAL_SDL_RWFromFile(
+			var utf8File = Utf8EncodeHeap(file);
+			var utf8Mode = Utf8EncodeHeap(mode);
+			var rwOps = INTERNAL_SDL_RWFromFile(
 				utf8File,
 				utf8Mode
 			);
@@ -418,8 +418,8 @@ namespace SDL2
 		private static extern unsafe IntPtr INTERNAL_SDL_LoadFile(byte* file, out IntPtr datasize);
 		public static unsafe IntPtr SDL_LoadFile(string file, out IntPtr datasize)
 		{
-			byte* utf8File = Utf8EncodeHeap(file);
-			IntPtr result = INTERNAL_SDL_LoadFile(utf8File, out datasize);
+			var utf8File = Utf8EncodeHeap(file);
+			var result = INTERNAL_SDL_LoadFile(utf8File, out datasize);
 			Marshal.FreeHGlobal((IntPtr) utf8File);
 			return result;
 		}
@@ -820,8 +820,8 @@ namespace SDL2
 		private static extern unsafe IntPtr INTERNAL_SDL_GetHint(byte* name);
 		public static unsafe string SDL_GetHint(string name)
 		{
-			int utf8NameBufSize = Utf8Size(name);
-			byte* utf8Name = stackalloc byte[utf8NameBufSize];
+			var utf8NameBufSize = Utf8Size(name);
+			var utf8Name = stackalloc byte[utf8NameBufSize];
 			return UTF8_ToManaged(
 				INTERNAL_SDL_GetHint(
 					Utf8Encode(name, utf8Name, utf8NameBufSize)
@@ -836,11 +836,11 @@ namespace SDL2
 		);
 		public static unsafe SDL_bool SDL_SetHint(string name, string value)
 		{
-			int utf8NameBufSize = Utf8Size(name);
-			byte* utf8Name = stackalloc byte[utf8NameBufSize];
+			var utf8NameBufSize = Utf8Size(name);
+			var utf8Name = stackalloc byte[utf8NameBufSize];
 
-			int utf8ValueBufSize = Utf8Size(value);
-			byte* utf8Value = stackalloc byte[utf8ValueBufSize];
+			var utf8ValueBufSize = Utf8Size(value);
+			var utf8Value = stackalloc byte[utf8ValueBufSize];
 
 			return INTERNAL_SDL_SetHint(
 				Utf8Encode(name, utf8Name, utf8NameBufSize),
@@ -859,11 +859,11 @@ namespace SDL2
 			string value,
 			SDL_HintPriority priority
 		) {
-			int utf8NameBufSize = Utf8Size(name);
-			byte* utf8Name = stackalloc byte[utf8NameBufSize];
+			var utf8NameBufSize = Utf8Size(name);
+			var utf8Name = stackalloc byte[utf8NameBufSize];
 
-			int utf8ValueBufSize = Utf8Size(value);
-			byte* utf8Value = stackalloc byte[utf8ValueBufSize];
+			var utf8ValueBufSize = Utf8Size(value);
+			var utf8Value = stackalloc byte[utf8ValueBufSize];
 
 			return INTERNAL_SDL_SetHintWithPriority(
 				Utf8Encode(name, utf8Name, utf8NameBufSize),
@@ -882,8 +882,8 @@ namespace SDL2
 			string name,
 			SDL_bool default_value
 		) {
-			int utf8NameBufSize = Utf8Size(name);
-			byte* utf8Name = stackalloc byte[utf8NameBufSize];
+			var utf8NameBufSize = Utf8Size(name);
+			var utf8Name = stackalloc byte[utf8NameBufSize];
 			return INTERNAL_SDL_GetHintBoolean(
 				Utf8Encode(name, utf8Name, utf8NameBufSize),
 				default_value
@@ -909,8 +909,8 @@ namespace SDL2
 		private static extern unsafe void INTERNAL_SDL_SetError(byte* fmtAndArglist);
 		public static unsafe void SDL_SetError(string fmtAndArglist)
 		{
-			int utf8FmtAndArglistBufSize = Utf8Size(fmtAndArglist);
-			byte* utf8FmtAndArglist = stackalloc byte[utf8FmtAndArglistBufSize];
+			var utf8FmtAndArglistBufSize = Utf8Size(fmtAndArglist);
+			var utf8FmtAndArglist = stackalloc byte[utf8FmtAndArglistBufSize];
 			INTERNAL_SDL_SetError(
 				Utf8Encode(fmtAndArglist, utf8FmtAndArglist, utf8FmtAndArglistBufSize)
 			);
@@ -986,8 +986,8 @@ namespace SDL2
 		private static extern unsafe void INTERNAL_SDL_Log(byte* fmtAndArglist);
 		public static unsafe void SDL_Log(string fmtAndArglist)
 		{
-			int utf8FmtAndArglistBufSize = Utf8Size(fmtAndArglist);
-			byte* utf8FmtAndArglist = stackalloc byte[utf8FmtAndArglistBufSize];
+			var utf8FmtAndArglistBufSize = Utf8Size(fmtAndArglist);
+			var utf8FmtAndArglist = stackalloc byte[utf8FmtAndArglistBufSize];
 			INTERNAL_SDL_Log(
 				Utf8Encode(fmtAndArglist, utf8FmtAndArglist, utf8FmtAndArglistBufSize)
 			);
@@ -1003,8 +1003,8 @@ namespace SDL2
 			int category,
 			string fmtAndArglist
 		) {
-			int utf8FmtAndArglistBufSize = Utf8Size(fmtAndArglist);
-			byte* utf8FmtAndArglist = stackalloc byte[utf8FmtAndArglistBufSize];
+			var utf8FmtAndArglistBufSize = Utf8Size(fmtAndArglist);
+			var utf8FmtAndArglist = stackalloc byte[utf8FmtAndArglistBufSize];
 			INTERNAL_SDL_LogVerbose(
 				category,
 				Utf8Encode(fmtAndArglist, utf8FmtAndArglist, utf8FmtAndArglistBufSize)
@@ -1021,8 +1021,8 @@ namespace SDL2
 			int category,
 			string fmtAndArglist
 		) {
-			int utf8FmtAndArglistBufSize = Utf8Size(fmtAndArglist);
-			byte* utf8FmtAndArglist = stackalloc byte[utf8FmtAndArglistBufSize];
+			var utf8FmtAndArglistBufSize = Utf8Size(fmtAndArglist);
+			var utf8FmtAndArglist = stackalloc byte[utf8FmtAndArglistBufSize];
 			INTERNAL_SDL_LogDebug(
 				category,
 				Utf8Encode(fmtAndArglist, utf8FmtAndArglist, utf8FmtAndArglistBufSize)
@@ -1039,8 +1039,8 @@ namespace SDL2
 			int category,
 			string fmtAndArglist
 		) {
-			int utf8FmtAndArglistBufSize = Utf8Size(fmtAndArglist);
-			byte* utf8FmtAndArglist = stackalloc byte[utf8FmtAndArglistBufSize];
+			var utf8FmtAndArglistBufSize = Utf8Size(fmtAndArglist);
+			var utf8FmtAndArglist = stackalloc byte[utf8FmtAndArglistBufSize];
 			INTERNAL_SDL_LogInfo(
 				category,
 				Utf8Encode(fmtAndArglist, utf8FmtAndArglist, utf8FmtAndArglistBufSize)
@@ -1057,8 +1057,8 @@ namespace SDL2
 			int category,
 			string fmtAndArglist
 		) {
-			int utf8FmtAndArglistBufSize = Utf8Size(fmtAndArglist);
-			byte* utf8FmtAndArglist = stackalloc byte[utf8FmtAndArglistBufSize];
+			var utf8FmtAndArglistBufSize = Utf8Size(fmtAndArglist);
+			var utf8FmtAndArglist = stackalloc byte[utf8FmtAndArglistBufSize];
 			INTERNAL_SDL_LogWarn(
 				category,
 				Utf8Encode(fmtAndArglist, utf8FmtAndArglist, utf8FmtAndArglistBufSize)
@@ -1075,8 +1075,8 @@ namespace SDL2
 			int category,
 			string fmtAndArglist
 		) {
-			int utf8FmtAndArglistBufSize = Utf8Size(fmtAndArglist);
-			byte* utf8FmtAndArglist = stackalloc byte[utf8FmtAndArglistBufSize];
+			var utf8FmtAndArglistBufSize = Utf8Size(fmtAndArglist);
+			var utf8FmtAndArglist = stackalloc byte[utf8FmtAndArglistBufSize];
 			INTERNAL_SDL_LogError(
 				category,
 				Utf8Encode(fmtAndArglist, utf8FmtAndArglist, utf8FmtAndArglistBufSize)
@@ -1093,8 +1093,8 @@ namespace SDL2
 			int category,
 			string fmtAndArglist
 		) {
-			int utf8FmtAndArglistBufSize = Utf8Size(fmtAndArglist);
-			byte* utf8FmtAndArglist = stackalloc byte[utf8FmtAndArglistBufSize];
+			var utf8FmtAndArglistBufSize = Utf8Size(fmtAndArglist);
+			var utf8FmtAndArglist = stackalloc byte[utf8FmtAndArglistBufSize];
 			INTERNAL_SDL_LogCritical(
 				category,
 				Utf8Encode(fmtAndArglist, utf8FmtAndArglist, utf8FmtAndArglistBufSize)
@@ -1113,8 +1113,8 @@ namespace SDL2
 			SDL_LogPriority priority,
 			string fmtAndArglist
 		) {
-			int utf8FmtAndArglistBufSize = Utf8Size(fmtAndArglist);
-			byte* utf8FmtAndArglist = stackalloc byte[utf8FmtAndArglistBufSize];
+			var utf8FmtAndArglistBufSize = Utf8Size(fmtAndArglist);
+			var utf8FmtAndArglist = stackalloc byte[utf8FmtAndArglistBufSize];
 			INTERNAL_SDL_LogMessage(
 				category,
 				priority,
@@ -1134,8 +1134,8 @@ namespace SDL2
 			SDL_LogPriority priority,
 			string fmtAndArglist
 		) {
-			int utf8FmtAndArglistBufSize = Utf8Size(fmtAndArglist);
-			byte* utf8FmtAndArglist = stackalloc byte[utf8FmtAndArglistBufSize];
+			var utf8FmtAndArglistBufSize = Utf8Size(fmtAndArglist);
+			var utf8FmtAndArglist = stackalloc byte[utf8FmtAndArglistBufSize];
 			INTERNAL_SDL_LogMessageV(
 				category,
 				priority,
@@ -1172,7 +1172,7 @@ namespace SDL2
 			out SDL_LogOutputFunction callback,
 			out IntPtr userdata
 		) {
-			IntPtr result = IntPtr.Zero;
+			var result = IntPtr.Zero;
 			SDL_LogGetOutputFunction(
 				out result,
 				out userdata
@@ -1288,8 +1288,8 @@ namespace SDL2
 			{
 				return IntPtr.Zero;
 			}
-			byte[] bytes = System.Text.Encoding.UTF8.GetBytes(str + '\0');
-			IntPtr mem = SDL.SDL_malloc((IntPtr) bytes.Length);
+			var bytes = System.Text.Encoding.UTF8.GetBytes(str + '\0');
+			var mem = SDL.SDL_malloc((IntPtr) bytes.Length);
 			Marshal.Copy(bytes, 0, mem, bytes.Length);
 			return mem;
 		}
@@ -1306,7 +1306,7 @@ namespace SDL2
 			};
 
 			var buttons = new INTERNAL_SDL_MessageBoxButtonData[messageboxdata.numbuttons];
-			for (int i = 0; i < messageboxdata.numbuttons; i++)
+			for (var i = 0; i < messageboxdata.numbuttons; i++)
 			{
 				buttons[i] = new INTERNAL_SDL_MessageBoxButtonData()
 				{
@@ -1330,7 +1330,7 @@ namespace SDL2
 			}
 
 			Marshal.FreeHGlobal(data.colorScheme);
-			for (int i = 0; i < messageboxdata.numbuttons; i++)
+			for (var i = 0; i < messageboxdata.numbuttons; i++)
 			{
 				SDL_free(buttons[i].text);
 			}
@@ -1354,11 +1354,11 @@ namespace SDL2
 			string message,
 			IntPtr window
 		) {
-			int utf8TitleBufSize = Utf8Size(title);
-			byte* utf8Title = stackalloc byte[utf8TitleBufSize];
+			var utf8TitleBufSize = Utf8Size(title);
+			var utf8Title = stackalloc byte[utf8TitleBufSize];
 
-			int utf8MessageBufSize = Utf8Size(message);
-			byte* utf8Message = stackalloc byte[utf8MessageBufSize];
+			var utf8MessageBufSize = Utf8Size(message);
+			var utf8Message = stackalloc byte[utf8MessageBufSize];
 
 			return INTERNAL_SDL_ShowSimpleMessageBox(
 				flags,
@@ -1632,8 +1632,8 @@ namespace SDL2
 			int h,
 			SDL_WindowFlags flags
 		) {
-			int utf8TitleBufSize = Utf8Size(title);
-			byte* utf8Title = stackalloc byte[utf8TitleBufSize];
+			var utf8TitleBufSize = Utf8Size(title);
+			var utf8Title = stackalloc byte[utf8TitleBufSize];
 			return INTERNAL_SDL_CreateWindow(
 				Utf8Encode(title, utf8Title, utf8TitleBufSize),
 				x, y, w, h,
@@ -1803,8 +1803,8 @@ namespace SDL2
 			IntPtr window,
 			string name
 		) {
-			int utf8NameBufSize = Utf8Size(name);
-			byte* utf8Name = stackalloc byte[utf8NameBufSize];
+			var utf8NameBufSize = Utf8Size(name);
+			var utf8Name = stackalloc byte[utf8NameBufSize];
 			return INTERNAL_SDL_GetWindowData(
 				window,
 				Utf8Encode(name, utf8Name, utf8NameBufSize)
@@ -1949,8 +1949,8 @@ namespace SDL2
 		private static extern unsafe int INTERNAL_SDL_GL_LoadLibrary(byte* path);
 		public static unsafe int SDL_GL_LoadLibrary(string path)
 		{
-			byte* utf8Path = Utf8EncodeHeap(path);
-			int result = INTERNAL_SDL_GL_LoadLibrary(
+			var utf8Path = Utf8EncodeHeap(path);
+			var result = INTERNAL_SDL_GL_LoadLibrary(
 				utf8Path
 			);
 			Marshal.FreeHGlobal((IntPtr) utf8Path);
@@ -1964,8 +1964,8 @@ namespace SDL2
 		/* IntPtr refers to a function pointer */
 		public static unsafe IntPtr SDL_GL_GetProcAddress(string proc)
 		{
-			int utf8ProcBufSize = Utf8Size(proc);
-			byte* utf8Proc = stackalloc byte[utf8ProcBufSize];
+			var utf8ProcBufSize = Utf8Size(proc);
+			var utf8Proc = stackalloc byte[utf8ProcBufSize];
 			return SDL_GL_GetProcAddress(
 				(IntPtr) Utf8Encode(proc, utf8Proc, utf8ProcBufSize)
 			);
@@ -1980,8 +1980,8 @@ namespace SDL2
 		);
 		public static unsafe SDL_bool SDL_GL_ExtensionSupported(string extension)
 		{
-			int utf8ExtensionBufSize = Utf8Size(extension);
-			byte* utf8Extension = stackalloc byte[utf8ExtensionBufSize];
+			var utf8ExtensionBufSize = Utf8Size(extension);
+			var utf8Extension = stackalloc byte[utf8ExtensionBufSize];
 			return INTERNAL_SDL_GL_ExtensionSupported(
 				Utf8Encode(extension, utf8Extension, utf8ExtensionBufSize)
 			);
@@ -2091,8 +2091,8 @@ namespace SDL2
 			string name,
 			IntPtr userdata
 		) {
-			int utf8NameBufSize = Utf8Size(name);
-			byte* utf8Name = stackalloc byte[utf8NameBufSize];
+			var utf8NameBufSize = Utf8Size(name);
+			var utf8Name = stackalloc byte[utf8NameBufSize];
 			return INTERNAL_SDL_SetWindowData(
 				window,
 				Utf8Encode(name, utf8Name, utf8NameBufSize),
@@ -2158,7 +2158,6 @@ namespace SDL2
 			IntPtr window,
 			SDL_bool grabbed
 		);
-
 
 		/* window refers to an SDL_Window*, icon to an SDL_Surface* */
 		[DllImport(nativeLibName, CallingConvention = CallingConvention.Cdecl)]
@@ -2244,8 +2243,8 @@ namespace SDL2
 			IntPtr window,
 			string title
 		) {
-			int utf8TitleBufSize = Utf8Size(title);
-			byte* utf8Title = stackalloc byte[utf8TitleBufSize];
+			var utf8TitleBufSize = Utf8Size(title);
+			var utf8Title = stackalloc byte[utf8TitleBufSize];
 			INTERNAL_SDL_SetWindowTitle(
 				window,
 				Utf8Encode(title, utf8Title, utf8TitleBufSize)
@@ -2274,8 +2273,8 @@ namespace SDL2
 		);
 		public static unsafe int SDL_VideoInit(string driver_name)
 		{
-			int utf8DriverNameBufSize = Utf8Size(driver_name);
-			byte* utf8DriverName = stackalloc byte[utf8DriverNameBufSize];
+			var utf8DriverNameBufSize = Utf8Size(driver_name);
+			var utf8DriverName = stackalloc byte[utf8DriverNameBufSize];
 			return INTERNAL_SDL_VideoInit(
 				Utf8Encode(driver_name, utf8DriverName, utf8DriverNameBufSize)
 			);
@@ -2398,8 +2397,8 @@ namespace SDL2
 		);
 		public static unsafe int SDL_Vulkan_LoadLibrary(string path)
 		{
-			byte* utf8Path = Utf8EncodeHeap(path);
-			int result = INTERNAL_SDL_Vulkan_LoadLibrary(
+			var utf8Path = Utf8EncodeHeap(path);
+			var result = INTERNAL_SDL_Vulkan_LoadLibrary(
 				utf8Path
 			);
 			Marshal.FreeHGlobal((IntPtr) utf8Path);
@@ -3642,7 +3641,7 @@ namespace SDL2
 			{
 				return false;
 			}
-			SDL_PixelType pType =
+			var pType =
 				(SDL_PixelType) SDL_PIXELTYPE(format);
 			return (
 				pType == SDL_PixelType.SDL_PIXELTYPE_INDEX1 ||
@@ -3657,7 +3656,7 @@ namespace SDL2
 			{
 				return false;
 			}
-			SDL_PixelType pType =
+			var pType =
 				(SDL_PixelType) SDL_PIXELTYPE(format);
 			return (
 				pType == SDL_PixelType.SDL_PIXELTYPE_PACKED8 ||
@@ -3672,7 +3671,7 @@ namespace SDL2
 			{
 				return false;
 			}
-			SDL_PixelType pType =
+			var pType =
 				(SDL_PixelType) SDL_PIXELTYPE(format);
 			return (
 				pType == SDL_PixelType.SDL_PIXELTYPE_ARRAYU8 ||
@@ -3687,7 +3686,7 @@ namespace SDL2
 		{
 			if (SDL_ISPIXELFORMAT_PACKED(format))
 			{
-				SDL_PackedOrder pOrder =
+				var pOrder =
 					(SDL_PackedOrder) SDL_PIXELORDER(format);
 				return (
 					pOrder == SDL_PackedOrder.SDL_PACKEDORDER_ARGB ||
@@ -3698,7 +3697,7 @@ namespace SDL2
 			}
 			else if (SDL_ISPIXELFORMAT_ARRAY(format))
 			{
-				SDL_ArrayOrder aOrder =
+				var aOrder =
 					(SDL_ArrayOrder) SDL_PIXELORDER(format);
 				return (
 					aOrder == SDL_ArrayOrder.SDL_ARRAYORDER_ARGB ||
@@ -4301,8 +4300,8 @@ namespace SDL2
 
 		public static unsafe IntPtr SDL_CreateShapedWindow(string title, uint x, uint y, uint w, uint h, SDL_WindowFlags flags)
 		{
-			byte* utf8Title = Utf8EncodeHeap(title);
-			IntPtr result = INTERNAL_SDL_CreateShapedWindow(utf8Title, x, y, w, h, flags);
+			var utf8Title = Utf8EncodeHeap(title);
+			var result = INTERNAL_SDL_CreateShapedWindow(utf8Title, x, y, w, h, flags);
 			Marshal.FreeHGlobal((IntPtr)utf8Title);
 			return result;
 		}
@@ -4681,7 +4680,7 @@ namespace SDL2
 		);
 		public static IntPtr SDL_LoadBMP(string file)
 		{
-			IntPtr rwops = SDL_RWFromFile(file, "rb");
+			var rwops = SDL_RWFromFile(file, "rb");
 			return SDL_LoadBMP_RW(rwops, 1);
 		}
 
@@ -4718,7 +4717,7 @@ namespace SDL2
 		);
 		public static int SDL_SaveBMP(IntPtr surface, string file)
 		{
-			IntPtr rwops = SDL_RWFromFile(file, "wb");
+			var rwops = SDL_RWFromFile(file, "wb");
 			return SDL_SaveBMP_RW(surface, rwops, 1);
 		}
 
@@ -4849,8 +4848,8 @@ namespace SDL2
 		public static unsafe int SDL_SetClipboardText(
 			string text
 		) {
-			byte* utf8Text = Utf8EncodeHeap(text);
-			int result = INTERNAL_SDL_SetClipboardText(
+			var utf8Text = Utf8EncodeHeap(text);
+			var result = INTERNAL_SDL_SetClipboardText(
 				utf8Text
 			);
 			Marshal.FreeHGlobal((IntPtr) utf8Text);
@@ -5004,9 +5003,9 @@ namespace SDL2
 			public UInt32 timestamp;
 			public UInt32 display;
 			public SDL_DisplayEventID displayEvent; // event, lolC#
-			private byte padding1;
-			private byte padding2;
-			private byte padding3;
+			private readonly byte padding1;
+			private readonly byte padding2;
+			private readonly byte padding3;
 			public Int32 data1;
 		}
 #pragma warning restore 0169
@@ -5021,9 +5020,9 @@ namespace SDL2
 			public UInt32 timestamp;
 			public UInt32 windowID;
 			public SDL_WindowEventID windowEvent; // event, lolC#
-			private byte padding1;
-			private byte padding2;
-			private byte padding3;
+			private readonly byte padding1;
+			private readonly byte padding2;
+			private readonly byte padding3;
 			public Int32 data1;
 			public Int32 data2;
 		}
@@ -5040,8 +5039,8 @@ namespace SDL2
 			public UInt32 windowID;
 			public byte state;
 			public byte repeat; /* non-zero if this is a repeat */
-			private byte padding2;
-			private byte padding3;
+			private readonly byte padding2;
+			private readonly byte padding3;
 			public SDL_Keysym keysym;
 		}
 #pragma warning restore 0169
@@ -5088,9 +5087,9 @@ namespace SDL2
 			public UInt32 windowID;
 			public UInt32 which;
 			public byte state; /* bitmask of buttons */
-			private byte padding1;
-			private byte padding2;
-			private byte padding3;
+			private readonly byte padding1;
+			private readonly byte padding2;
+			private readonly byte padding3;
 			public Int32 x;
 			public Int32 y;
 			public Int32 xrel;
@@ -5111,7 +5110,7 @@ namespace SDL2
 			public byte button; /* button id */
 			public byte state; /* SDL_PRESSED or SDL_RELEASED */
 			public byte clicks; /* 1 for single-click, 2 for double-click, etc. */
-			private byte padding1;
+			private readonly byte padding1;
 			public Int32 x;
 			public Int32 y;
 		}
@@ -5142,9 +5141,9 @@ namespace SDL2
 			public UInt32 timestamp;
 			public Int32 which; /* SDL_JoystickID */
 			public byte axis;
-			private byte padding1;
-			private byte padding2;
-			private byte padding3;
+			private readonly byte padding1;
+			private readonly byte padding2;
+			private readonly byte padding3;
 			public Int16 axisValue; /* value, lolC# */
 			public UInt16 padding4;
 		}
@@ -5160,9 +5159,9 @@ namespace SDL2
 			public UInt32 timestamp;
 			public Int32 which; /* SDL_JoystickID */
 			public byte ball;
-			private byte padding1;
-			private byte padding2;
-			private byte padding3;
+			private readonly byte padding1;
+			private readonly byte padding2;
+			private readonly byte padding3;
 			public Int16 xrel;
 			public Int16 yrel;
 		}
@@ -5179,8 +5178,8 @@ namespace SDL2
 			public Int32 which; /* SDL_JoystickID */
 			public byte hat; /* index of the hat */
 			public byte hatValue; /* value, lolC# */
-			private byte padding1;
-			private byte padding2;
+			private readonly byte padding1;
+			private readonly byte padding2;
 		}
 #pragma warning restore 0169
 
@@ -5195,8 +5194,8 @@ namespace SDL2
 			public Int32 which; /* SDL_JoystickID */
 			public byte button;
 			public byte state; /* SDL_PRESSED or SDL_RELEASED */
-			private byte padding1;
-			private byte padding2;
+			private readonly byte padding1;
+			private readonly byte padding2;
 		}
 #pragma warning restore 0169
 
@@ -5219,11 +5218,11 @@ namespace SDL2
 			public UInt32 timestamp;
 			public Int32 which; /* SDL_JoystickID */
 			public byte axis;
-			private byte padding1;
-			private byte padding2;
-			private byte padding3;
+			private readonly byte padding1;
+			private readonly byte padding2;
+			private readonly byte padding3;
 			public Int16 axisValue; /* value, lolC# */
-			private UInt16 padding4;
+			private readonly UInt16 padding4;
 		}
 #pragma warning restore 0169
 
@@ -5238,8 +5237,8 @@ namespace SDL2
 			public Int32 which; /* SDL_JoystickID */
 			public byte button;
 			public byte state;
-			private byte padding1;
-			private byte padding2;
+			private readonly byte padding1;
+			private readonly byte padding2;
 		}
 #pragma warning restore 0169
 
@@ -5291,9 +5290,9 @@ namespace SDL2
 			public UInt32 timestamp;
 			public UInt32 which;
 			public byte iscapture;
-			private byte padding1;
-			private byte padding2;
-			private byte padding3;
+			private readonly byte padding1;
+			private readonly byte padding2;
+			private readonly byte padding3;
 		}
 #pragma warning restore 0169
 
@@ -5552,8 +5551,8 @@ namespace SDL2
 			out SDL_EventFilter filter,
 			out IntPtr userdata
 		) {
-			IntPtr result = IntPtr.Zero;
-			SDL_bool retval = SDL_GetEventFilter(out result, out userdata);
+			var result = IntPtr.Zero;
+			var retval = SDL_GetEventFilter(out result, out userdata);
 			if (result != IntPtr.Zero)
 			{
 				filter = (SDL_EventFilter) GetDelegateForFunctionPointer<SDL_EventFilter>(
@@ -6256,8 +6255,8 @@ namespace SDL2
 		);
 		public static unsafe SDL_Scancode SDL_GetScancodeFromName(string name)
 		{
-			int utf8NameBufSize = Utf8Size(name);
-			byte* utf8Name = stackalloc byte[utf8NameBufSize];
+			var utf8NameBufSize = Utf8Size(name);
+			var utf8Name = stackalloc byte[utf8NameBufSize];
 			return INTERNAL_SDL_GetScancodeFromName(
 				Utf8Encode(name, utf8Name, utf8NameBufSize)
 			);
@@ -6278,8 +6277,8 @@ namespace SDL2
 		);
 		public static unsafe SDL_Keycode SDL_GetKeyFromName(string name)
 		{
-			int utf8NameBufSize = Utf8Size(name);
-			byte* utf8Name = stackalloc byte[utf8NameBufSize];
+			var utf8NameBufSize = Utf8Size(name);
+			var utf8Name = stackalloc byte[utf8NameBufSize];
 			return INTERNAL_SDL_GetKeyFromName(
 				Utf8Encode(name, utf8Name, utf8NameBufSize)
 			);
@@ -6738,8 +6737,8 @@ namespace SDL2
 		);
 		public static unsafe Guid SDL_JoystickGetGUIDFromString(string pchGuid)
 		{
-			int utf8PchGuidBufSize = Utf8Size(pchGuid);
-			byte* utf8PchGuid = stackalloc byte[utf8PchGuidBufSize];
+			var utf8PchGuidBufSize = Utf8Size(pchGuid);
+			var utf8PchGuid = stackalloc byte[utf8PchGuidBufSize];
 			return INTERNAL_SDL_JoystickGetGUIDFromString(
 				Utf8Encode(pchGuid, utf8PchGuid, utf8PchGuidBufSize)
 			);
@@ -7049,8 +7048,8 @@ namespace SDL2
 		public static unsafe int SDL_GameControllerAddMapping(
 			string mappingString
 		) {
-			byte* utf8MappingString = Utf8EncodeHeap(mappingString);
-			int result = INTERNAL_SDL_GameControllerAddMapping(
+			var utf8MappingString = Utf8EncodeHeap(mappingString);
+			var result = INTERNAL_SDL_GameControllerAddMapping(
 				utf8MappingString
 			);
 			Marshal.FreeHGlobal((IntPtr) utf8MappingString);
@@ -7082,7 +7081,7 @@ namespace SDL2
 		);
 		public static int SDL_GameControllerAddMappingsFromFile(string file)
 		{
-			IntPtr rwops = SDL_RWFromFile(file, "rb");
+			var rwops = SDL_RWFromFile(file, "rb");
 			return INTERNAL_SDL_GameControllerAddMappingsFromRW(rwops, 1);
 		}
 
@@ -7226,8 +7225,8 @@ namespace SDL2
 		public static unsafe SDL_GameControllerAxis SDL_GameControllerGetAxisFromString(
 			string pchString
 		) {
-			int utf8PchStringBufSize = Utf8Size(pchString);
-			byte* utf8PchString = stackalloc byte[utf8PchStringBufSize];
+			var utf8PchStringBufSize = Utf8Size(pchString);
+			var utf8PchString = stackalloc byte[utf8PchStringBufSize];
 			return INTERNAL_SDL_GameControllerGetAxisFromString(
 				Utf8Encode(pchString, utf8PchString, utf8PchStringBufSize)
 			);
@@ -7258,11 +7257,11 @@ namespace SDL2
 			SDL_GameControllerAxis axis
 		) {
 			// This is guaranteed to never be null
-			INTERNAL_SDL_GameControllerButtonBind dumb = INTERNAL_SDL_GameControllerGetBindForAxis(
+			var dumb = INTERNAL_SDL_GameControllerGetBindForAxis(
 				gamecontroller,
 				axis
 			);
-			SDL_GameControllerButtonBind result = new SDL_GameControllerButtonBind();
+			var result = new SDL_GameControllerButtonBind();
 			result.bindType = (SDL_GameControllerBindType) dumb.bindType;
 			result.value.hat.hat = dumb.unionVal0;
 			result.value.hat.hat_mask = dumb.unionVal1;
@@ -7283,8 +7282,8 @@ namespace SDL2
 		public static unsafe SDL_GameControllerButton SDL_GameControllerGetButtonFromString(
 			string pchString
 		) {
-			int utf8PchStringBufSize = Utf8Size(pchString);
-			byte* utf8PchString = stackalloc byte[utf8PchStringBufSize];
+			var utf8PchStringBufSize = Utf8Size(pchString);
+			var utf8PchString = stackalloc byte[utf8PchStringBufSize];
 			return INTERNAL_SDL_GameControllerGetButtonFromString(
 				Utf8Encode(pchString, utf8PchString, utf8PchStringBufSize)
 			);
@@ -7313,11 +7312,11 @@ namespace SDL2
 			SDL_GameControllerButton button
 		) {
 			// This is guaranteed to never be null
-			INTERNAL_SDL_GameControllerButtonBind dumb = INTERNAL_SDL_GameControllerGetBindForButton(
+			var dumb = INTERNAL_SDL_GameControllerGetBindForButton(
 				gamecontroller,
 				button
 			);
-			SDL_GameControllerButtonBind result = new SDL_GameControllerButtonBind();
+			var result = new SDL_GameControllerButtonBind();
 			result.bindType = (SDL_GameControllerBindType) dumb.bindType;
 			result.value.hat.hat = dumb.unionVal0;
 			result.value.hat.hat_mask = dumb.unionVal1;
@@ -8124,8 +8123,8 @@ namespace SDL2
 		);
 		public static unsafe int SDL_AudioInit(string driver_name)
 		{
-			int utf8DriverNameBufSize = Utf8Size(driver_name);
-			byte* utf8DriverName = stackalloc byte[utf8DriverNameBufSize];
+			var utf8DriverNameBufSize = Utf8Size(driver_name);
+			var utf8DriverName = stackalloc byte[utf8DriverNameBufSize];
 			return INTERNAL_SDL_AudioInit(
 				Utf8Encode(driver_name, utf8DriverName, utf8DriverNameBufSize)
 			);
@@ -8206,7 +8205,7 @@ namespace SDL2
 			out IntPtr audio_buf,
 			out uint audio_len
 		) {
-			IntPtr rwops = SDL_RWFromFile(file, "rb");
+			var rwops = SDL_RWFromFile(file, "rb");
 			return SDL_LoadWAV_RW(
 				rwops,
 				1,
@@ -8295,8 +8294,8 @@ namespace SDL2
 			out SDL_AudioSpec obtained,
 			int allowed_changes
 		) {
-			int utf8DeviceBufSize = Utf8Size(device);
-			byte* utf8Device = stackalloc byte[utf8DeviceBufSize];
+			var utf8DeviceBufSize = Utf8Size(device);
+			var utf8Device = stackalloc byte[utf8DeviceBufSize];
 			return INTERNAL_SDL_OpenAudioDevice(
 				Utf8Encode(device, utf8Device, utf8DeviceBufSize),
 				iscapture,
@@ -8579,8 +8578,8 @@ namespace SDL2
 		public static unsafe SDL_bool SDL_AndroidRequestPermission(
 			string permission
 		) {
-			byte* permissionPtr = Utf8EncodeHeap(permission);
-			SDL_bool result = INTERNAL_SDL_AndroidRequestPermission(
+			var permissionPtr = Utf8EncodeHeap(permission);
+			var result = INTERNAL_SDL_AndroidRequestPermission(
 				permissionPtr
 			);
 			Marshal.FreeHGlobal((IntPtr) permissionPtr);
@@ -8603,8 +8602,8 @@ namespace SDL2
 			int xOffset,
 			int yOffset
 		) {
-			byte* messagePtr = Utf8EncodeHeap(message);
-			int result = INTERNAL_SDL_AndroidShowToast(
+			var messagePtr = Utf8EncodeHeap(message);
+			var result = INTERNAL_SDL_AndroidShowToast(
 				messagePtr,
 				duration,
 				gravity,
@@ -8744,9 +8743,9 @@ namespace SDL2
 		[StructLayout(LayoutKind.Sequential)]
 		public struct INTERNAL_kmsdrm_wminfo
 		{
-			int dev_index;
-			int drm_fd;
-			IntPtr gbm_dev; // Refers to a gbm_device*
+			readonly int dev_index;
+			readonly int drm_fd;
+			readonly IntPtr gbm_dev; // Refers to a gbm_device*
 		}
 
 		[StructLayout(LayoutKind.Explicit)]
@@ -8814,11 +8813,11 @@ namespace SDL2
 		);
 		public static unsafe string SDL_GetPrefPath(string org, string app)
 		{
-			int utf8OrgBufSize = Utf8Size(org);
-			byte* utf8Org = stackalloc byte[utf8OrgBufSize];
+			var utf8OrgBufSize = Utf8Size(org);
+			var utf8Org = stackalloc byte[utf8OrgBufSize];
 
-			int utf8AppBufSize = Utf8Size(app);
-			byte* utf8App = stackalloc byte[utf8AppBufSize];
+			var utf8AppBufSize = Utf8Size(app);
+			var utf8App = stackalloc byte[utf8AppBufSize];
 
 			return UTF8_ToManaged(
 				INTERNAL_SDL_GetPrefPath(
@@ -8947,8 +8946,8 @@ namespace SDL2
 		private static unsafe extern int INTERNAL_SDL_OpenURL(byte* url);
 		public static unsafe int SDL_OpenURL(string url)
 		{
-			byte* urlPtr = Utf8EncodeHeap(url);
-			int result = INTERNAL_SDL_OpenURL(urlPtr);
+			var urlPtr = Utf8EncodeHeap(url);
+			var result = INTERNAL_SDL_OpenURL(urlPtr);
 			Marshal.FreeHGlobal((IntPtr) urlPtr);
 			return result;
 		}

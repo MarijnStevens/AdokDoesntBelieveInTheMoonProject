@@ -150,7 +150,7 @@ namespace SDL2
 		public static SDL.SDL_version MIX_Linked_Version()
 		{
 			SDL.SDL_version result;
-			IntPtr result_ptr = INTERNAL_MIX_Linked_Version();
+			var result_ptr = INTERNAL_MIX_Linked_Version();
 			result = SDL.PtrToStructure<SDL.SDL_version>(
 				result_ptr
 			);
@@ -193,7 +193,7 @@ namespace SDL2
 		/* This is an RWops macro in the C header. */
 		public static IntPtr Mix_LoadWAV(string file)
 		{
-			IntPtr rwops = SDL.SDL_RWFromFile(file, "rb");
+			var rwops = SDL.SDL_RWFromFile(file, "rb");
 			return Mix_LoadWAV_RW(rwops, 1);
 		}
 
@@ -204,8 +204,8 @@ namespace SDL2
 		);
 		public static unsafe IntPtr Mix_LoadMUS(string file)
 		{
-			byte* utf8File = SDL.Utf8EncodeHeap(file);
-			IntPtr handle = INTERNAL_Mix_LoadMUS(
+			var utf8File = SDL.Utf8EncodeHeap(file);
+			var handle = INTERNAL_Mix_LoadMUS(
 				utf8File
 			);
 			Marshal.FreeHGlobal((IntPtr) utf8File);
@@ -578,8 +578,8 @@ namespace SDL2
 		);
 		public static unsafe int Mix_SetMusicCMD(string command)
 		{
-			byte* utf8Cmd = SDL.Utf8EncodeHeap(command);
-			int result = INTERNAL_Mix_SetMusicCMD(
+			var utf8Cmd = SDL.Utf8EncodeHeap(command);
+			var result = INTERNAL_Mix_SetMusicCMD(
 				utf8Cmd
 			);
 			Marshal.FreeHGlobal((IntPtr) utf8Cmd);
@@ -598,8 +598,8 @@ namespace SDL2
 		);
 		public static unsafe int Mix_SetSoundFonts(string paths)
 		{
-			byte* utf8Paths = SDL.Utf8EncodeHeap(paths);
-			int result = INTERNAL_Mix_SetSoundFonts(
+			var utf8Paths = SDL.Utf8EncodeHeap(paths);
+			var result = INTERNAL_Mix_SetSoundFonts(
 				utf8Paths
 			);
 			Marshal.FreeHGlobal((IntPtr) utf8Paths);

@@ -73,7 +73,7 @@ namespace SDL2
 		public static SDL.SDL_version IMG_Linked_Version()
 		{
 			SDL.SDL_version result;
-			IntPtr result_ptr = INTERNAL_IMG_Linked_Version();
+			var result_ptr = INTERNAL_IMG_Linked_Version();
 			result = SDL.PtrToStructure<SDL.SDL_version>(
 				result_ptr
 			);
@@ -93,8 +93,8 @@ namespace SDL2
 		);
 		public static unsafe IntPtr IMG_Load(string file)
 		{
-			byte* utf8File = SDL.Utf8EncodeHeap(file);
-			IntPtr handle = INTERNAL_IMG_Load(
+			var utf8File = SDL.Utf8EncodeHeap(file);
+			var handle = INTERNAL_IMG_Load(
 				utf8File
 			);
 			Marshal.FreeHGlobal((IntPtr) utf8File);
@@ -122,8 +122,8 @@ namespace SDL2
 			int freesrc,
 			string type
 		) {
-			int utf8TypeBufSize = SDL.Utf8Size(type);
-			byte* utf8Type = stackalloc byte[utf8TypeBufSize];
+			var utf8TypeBufSize = SDL.Utf8Size(type);
+			var utf8Type = stackalloc byte[utf8TypeBufSize];
 			return INTERNAL_IMG_LoadTyped_RW(
 				src,
 				freesrc,
@@ -141,8 +141,8 @@ namespace SDL2
 			IntPtr renderer,
 			string file
 		) {
-			byte* utf8File = SDL.Utf8EncodeHeap(file);
-			IntPtr handle = INTERNAL_IMG_LoadTexture(
+			var utf8File = SDL.Utf8EncodeHeap(file);
+			var handle = INTERNAL_IMG_LoadTexture(
 				renderer,
 				utf8File
 			);
@@ -180,8 +180,8 @@ namespace SDL2
 			int freesrc,
 			string type
 		) {
-			byte* utf8Type = SDL.Utf8EncodeHeap(type);
-			IntPtr handle = INTERNAL_IMG_LoadTextureTyped_RW(
+			var utf8Type = SDL.Utf8EncodeHeap(type);
+			var handle = INTERNAL_IMG_LoadTextureTyped_RW(
 				renderer,
 				src,
 				freesrc,
@@ -206,8 +206,8 @@ namespace SDL2
 		);
 		public static unsafe int IMG_SavePNG(IntPtr surface, string file)
 		{
-			byte* utf8File = SDL.Utf8EncodeHeap(file);
-			int result = INTERNAL_IMG_SavePNG(
+			var utf8File = SDL.Utf8EncodeHeap(file);
+			var result = INTERNAL_IMG_SavePNG(
 				surface,
 				utf8File
 			);
@@ -233,8 +233,8 @@ namespace SDL2
 		);
 		public static unsafe int IMG_SaveJPG(IntPtr surface, string file, int quality)
 		{
-			byte* utf8File = SDL.Utf8EncodeHeap(file);
-			int result = INTERNAL_IMG_SaveJPG(
+			var utf8File = SDL.Utf8EncodeHeap(file);
+			var result = INTERNAL_IMG_SaveJPG(
 				surface,
 				utf8File,
 				quality

@@ -38,33 +38,39 @@
     <None Update="assets\s0.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="dependencies\LICENSE.freetype.txt">
+    <None Update="dependencies\win-x64\LICENSE.freetype.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="dependencies\LICENSE.harfbuzz.txt">
+    <None Update="dependencies\win-x64\LICENSE.harfbuzz.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="dependencies\LICENSE.zlib.txt">
+    <None Update="dependencies\win-x64\LICENSE.zlib.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="dependencies\README-SDL.txt">
+    <None Update="dependencies\win-x64\README-SDL.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="dependencies\SDL2.dll">
+    <None Update="dependencies\win-x64\SDL2.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="dependencies\SDL2_image.dll">
+    <None Update="dependencies\win-x64\SDL2_image.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="dependencies\SDL2_image_README.txt">
+    <None Update="dependencies\win-x64\SDL2_image_README.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="dependencies\SDL2_ttf.dll">
+    <None Update="dependencies\win-x64\SDL2_ttf.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="dependencies\SDL2_ttf_README.txt">
+    <None Update="dependencies\win-x64\SDL2_ttf_README.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <EditorConfigFiles Remove="C:\Users\ms\Desktop\Projects\Myriad\.editorconfig" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\ms\Desktop\Projects\Myriad\.editorconfig" />
   </ItemGroup>
 
 </Project>
