@@ -14,7 +14,7 @@ public static class Log
     [Conditional("DEBUG")]
     public static void Exit()
     {
-        Console.WriteLine(_runtimeWatch.Elapsed + ": ~ " + _runtimeWatch.Elapsed.Seconds + "s");
+        Console.WriteLine(_runtimeWatch.Elapsed + ": Goodbye ~ " + _runtimeWatch.Elapsed.Seconds + "s");
     }
 
     [Conditional("DEBUG")]
