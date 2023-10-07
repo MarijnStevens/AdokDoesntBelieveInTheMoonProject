@@ -18,11 +18,11 @@ SDL.SDL_RendererFlags.SDL_RENDERER_ACCELERATED
 //| SDL.SDL_RendererFlags.SDL_RENDERER_PRESENTVSYNC;
 ;
 
-int displayIndex = 0;
+var displayIndex = 0;
 var screen = new Rect(0, 0, 1920, 1080);
-float dpi = 0f;
+var dpi = 0f;
 
-string windowText = "Myriad000";
+var windowText = "Myriad000";
 float fontSizeInPoints = 24;
 
 var benchmark = new Benchmarky();
@@ -31,13 +31,13 @@ Log.Error(SDL.SDL_Init(SDL.SDL_INIT_VIDEO) < 0, "There was an issue initilizing 
 Log.Debug();
 
 Log.Debug("SDL_CreateWindow");
-IntPtr window = SDL.SDL_CreateWindow(windowText, 0, 0, 1920, 1080, windowFlags);
+var window = SDL.SDL_CreateWindow(windowText, 0, 0, 1920, 1080, windowFlags);
 Log.Debug();
 
 Log.Error(window == IntPtr.Zero, "There was an issue creating the window");
 
 Log.Debug($"SDL_GetDesktopDisplayMode({displayIndex})");
-if (SDL.SDL_GetDesktopDisplayMode(displayIndex, out SDL.SDL_DisplayMode dm) == 0)
+if (SDL.SDL_GetDesktopDisplayMode(displayIndex, out var dm) == 0)
 {
     screen.w = dm.w;
     screen.h = dm.h;
@@ -52,7 +52,7 @@ Log.Debug();
 
 Log.Debug($"SDL_GetDesktopDisplayDPI({displayIndex})");
 Log.Error(SDL.SDL_GetDisplayDPI(displayIndex, out dpi, out _, out _) != 0, "SDL GetDisplayDPI(" + displayIndex + ") failed. {}");
-float fontSizeInPixels = fontSizeInPoints * (dpi / 72.0f);
+var fontSizeInPixels = fontSizeInPoints * (dpi / 72.0f);
 
 Log.Debug("SDL_CreateRenderer");
 var renderer = SDL.SDL_CreateRenderer(window, -1, renderFlags);
@@ -70,7 +70,7 @@ Log.Debug();
 var quit = false;
 
 Log.Debug("IMG_Load");
-IntPtr imageSurface = SDL_image.IMG_Load("assets/disclaimer.png");
+var imageSurface = SDL_image.IMG_Load("assets/disclaimer.png");
 Log.Debug();
 
 if (imageSurface == IntPtr.Zero)
@@ -84,31 +84,30 @@ if (imageSurface == IntPtr.Zero)
 }
 
 Log.Debug("SDL_QueryTexture");
-SDL.SDL_QueryTexture(imageSurface, out _, out _, out int imageWidth, out int imageHeight);
+SDL.SDL_QueryTexture(imageSurface, out _, out _, out var imageWidth, out var imageHeight);
 
 Log.Debug("SDL_CreateTextureFromSurface");
-IntPtr texture = SDL.SDL_CreateTextureFromSurface(renderer, imageSurface);
+var texture = SDL.SDL_CreateTextureFromSurface(renderer, imageSurface);
 
 SDL.SDL_FreeSurface(imageSurface);
 
-SDL.SDL_Rect destRect = new SDL.SDL_Rect
+var destRect = new SDL.SDL_Rect
 {
-    x = screen.w / 2 - 830 / 2,
-    y = screen.h / 2 - 467 / 2,
+    x = (screen.w / 2) - (830 / 2),
+    y = (screen.h / 2) - (467 / 2),
     w = 830,
     h = 467
 };
 
-
 Log.Debug("SDL_CreateTextureFromSurface(\"South_Park_Regular.ttf\")");
-IntPtr font = SDL_ttf.TTF_OpenFont("assets/fonts/South_Park_Regular.ttf", (int)fontSizeInPixels);
+var font = SDL_ttf.TTF_OpenFont("assets/fonts/South_Park_Regular.ttf", (int)fontSizeInPixels);
 Log.Debug();
 
 var textColor = Color.FromArgb(255, 203, 219, 252);
 
 var text = "FPS: 0";
-IntPtr textSurface = IntPtr.Zero;
-IntPtr textTexture = IntPtr.Zero;
+var textSurface = IntPtr.Zero;
+var textTexture = IntPtr.Zero;
 
 int textWidth, textHeight;
 
@@ -121,7 +120,7 @@ while (!quit)
     while (SDL.SDL_PollEvent(out e) != 0)
     {
         if (e.type == SDL.SDL_EventType.SDL_QUIT
-        || e.type == SDL.SDL_EventType.SDL_KEYDOWN && (e.key.keysym.sym == SDL.SDL_Keycode.SDLK_ESCAPE)
+        || (e.type == SDL.SDL_EventType.SDL_KEYDOWN && (e.key.keysym.sym == SDL.SDL_Keycode.SDLK_ESCAPE))
         )
         {
             quit = true;

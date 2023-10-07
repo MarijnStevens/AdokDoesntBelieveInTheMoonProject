@@ -11,9 +11,10 @@ internal class Windows : IOperatingSystemServices
 
     public void LoadDependencies()
     {
-        string exeDirectory = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
-        string customDllRelativePath = Path.Combine(exeDirectory, "dependencies\\SDL2.dll");
-        string dllDirectory = Path.GetDirectoryName(exeDirectory);
+        var exeDirectory = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
+        var runtimeBits = Environment.Is64BitProcess ? "x64" : "x32";
+        var customDllRelativePath = Path.Combine(exeDirectory, $"dependencies\\win-{runtimeBits}\\SDL2.dll");
+        var dllDirectory = Path.GetDirectoryName(customDllRelativePath);
 
         if (!SetDllDirectory(dllDirectory))
         {
